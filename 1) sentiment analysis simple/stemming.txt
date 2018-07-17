@@ -1,0 +1,3 @@
+https://pythonprogramming.net/stemming-nltk-tutorial/
+http://www.nltk.org/api/nltk.stem.html
+http://www.cs.duke.edu/courses/spring14/compsci290/assignments/lab02.html
