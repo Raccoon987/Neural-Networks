@@ -7,8 +7,8 @@ from itertools import product
 import pandas as pd
 
 from review_neural_batch_moment_dropout import NeuralNetwork
-#from review_neural_batch_RMSProp import NeuralNetwork
-#from review_neur_batch_moment_learnrate import NeuralNetwork
+#from review_batch_RMSProp import NeuralNetwork
+#from review_batch_moment_RMSProp import NeuralNetwork
 
 def main():
     lst = [1768, 1555, 894, 674, 65, 54, 137, 327, 354, 492, 553, 634, 844, 928, 1054, 1118, 1228, 1449, 1474, 1483, 1504, 1529, 1559, 1733, 1881, 1917]

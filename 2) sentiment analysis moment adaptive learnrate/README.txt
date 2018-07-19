@@ -13,9 +13,11 @@ Some math that explaines implemented technics that improve neural network perfor
 ... 
 
 
-* review_neural_batch_RMSProp.py - neural network implementation using batches and special decreasing learning rate technic
+* review_batch_RMSProp.py - neural network implementation using batches and special decreasing learning rate technic
 
-* 
+* review_batch_momentum_RMSProp.py - neural network implementation using batches and special decreasing learning rate 
+technic + simple momentum
+
 
 * 
 
