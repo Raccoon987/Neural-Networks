@@ -9,8 +9,8 @@ backpropagation algorithm implemented without using any neural libraries BUT usi
 The task of this network is the same - sentiment analysis - binary classification of product reviews from 
 "Yandex_sentiment_analysis" repository. 
 
-Some math that explaines implemented technics that improve neural network performance and convergence rate - look in file
-... 
+Some math that explaines implemented technics for improvement neural network performance and convergence rate - look in file
+some_math.jpg 
 
 
 * review_batch_RMSProp.py - neural network implementation using batches and special decreasing learning rate technic
@@ -19,6 +19,8 @@ Some math that explaines implemented technics that improve neural network perfor
 technic + simple momentum
 
 * review_Adam.py - Adam optimizer (adaptive moment estimation) implementation
+
+* review_batch_momentum_dropout.py - same neural network with introducing simple momentum and dropout technic
 
 
 
