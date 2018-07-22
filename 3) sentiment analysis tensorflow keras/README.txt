@@ -21,3 +21,5 @@ This time the code is written using the tensorflow and keras modules.
 * review_tf_batchnorm_save.py - NN similat to previous but with batch normalization technique 
 
 * review_tf_batchnorm.py - NN with batch normalization technique, it fit model and make a prediction without saving session to disk
+
+* review_tensorflow_RESULTS.txt - accuracy results for different parameters and optimizators 
