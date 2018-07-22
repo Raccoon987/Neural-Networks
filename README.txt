@@ -1,2 +1,9 @@
 Repository contain different neural network implementation:
 
+1) sentiment analysis simple - simple implementation of regular neural network (NN) with four fully-connected layers for 
+                               classification of product reviews - task that was considered in Yandex_sentiment_analysis repository.
+
+2) sentiment analysis moment adaptive learnrate - implementation of regular NN using special technics like introduction momentum and
+                                                  adaptive learnrates (RMSProp, Adam optimizer, dropout)
+
+3) sentiment analysis tensorflow keras - this time NN was written using keras and tensorflow modules
