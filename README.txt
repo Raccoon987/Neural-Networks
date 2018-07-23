@@ -7,3 +7,5 @@ Repository contain different neural network implementation:
                                                   adaptive learnrates (RMSProp, Adam optimizer, dropout)
 
 3) sentiment analysis tensorflow keras - this time NN was written using keras and tensorflow modules
+
+4) convolution NN - convolution NN for face emotion classification
