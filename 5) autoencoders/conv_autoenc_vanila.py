@@ -10,11 +10,13 @@ import csv
 from os import walk
 
 
+f = lambda f_name: os.path.realpath(os.path.join(os.getcwd(), f_name)).replace("\\", "/")
+
 def getData(balance_ones=False):
     # images are 48x48 = 2304 size vectors;  N = 35887
     Y, X = [], []
     first = True
-    for line in open('C:/Users/Alex/PycharmProjects/Theano_Tensorflow/review_tensorflow/fer2013'):
+    for line in open(f('/../4) convolution NN/fer2013.csv')):
         if first:
             first = False
         else:

@@ -17,3 +17,5 @@ https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression
 * conv_face_grid_search  - folder contain results and graphs
 
 * fer2013.csv - file with images data 
+
+* convolution.jpg - some pictures that explain convolution mechanism
