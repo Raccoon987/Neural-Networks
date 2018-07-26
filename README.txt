@@ -9,3 +9,6 @@ Repository contain different neural network implementation:
 3) sentiment analysis tensorflow keras - this time NN was written using keras and tensorflow modules
 
 4) convolution NN - convolution NN for face emotion classification
+
+5) autoencoders - unsupervised machine learning - autoencoders, Restricted Bolzman machines, convolutional autoencoders; 
+                  deep neural and deep belief networks
