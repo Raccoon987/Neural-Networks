@@ -79,7 +79,8 @@ class SimpleReccUnit():
         current_X = tf.reshape(current_X, (1, self.D))
         prev_h_rec = tf.reshape(prev_h_rec, (1, self.M2))
 
-        h_recur = self.nonlinear(self.nonlin_func)(  tf.matmul(current_X, self.Wx_h[0])  + tf.matmul(tf.reshape(prev_h_rec, (1, self.M2)), self.Wh_h[0]) +  self.Wh_h[1])
+        h_recur = self.nonlinear(self.nonlin_func)(  tf.matmul(current_X, self.Wx_h[0])  + tf.matmul(tf.reshape(prev_h_rec, (1, self.M2)), 
+                                                                                                                self.Wh_h[0]) +  self.Wh_h[1])
         return tf.reshape(h_recur, (self.M2,))
 
     def output(self, Xw):
@@ -100,7 +101,8 @@ class RateReccUnit():
         if Wb_npz:
             self.Wx_h, self.Wx_z, self.Wh_z, self.Wh_h = [list(map(tf.Variable, W_b)) for W_b in Wb_npz]
         else:
-            self.Wx_h, self.Wx_z, self.Wh_z, self.Wh_h = [self.helper(dim) for dim in ((self.D, self.M2), (self.D, self.M2), (self.M2, self.M2), (self.M2, self.M2))]
+            self.Wx_h, self.Wx_z, self.Wh_z, self.Wh_h = [self.helper(dim) for dim in ((self.D, self.M2), (self.D, self.M2), 
+                                                                                       (self.M2, self.M2), (self.M2, self.M2))]
 
         self.params = [self.Wx_h, self.Wx_z, self.Wh_z, self.Wh_h]
 
@@ -153,7 +155,8 @@ class GateReccUnit():
             self.Wx_h, self.Wx_z, self.Wh_z, self.Wh_h, self.Wx_r, self.Wh_r = [list(map(tf.Variable, W_b)) for W_b in Wb_npz]
         else:
             self.Wx_h, self.Wx_z, self.Wh_z, self.Wh_h, self.Wx_r, self.Wh_r = [self.helper(dim) for dim in
-                                                                                ((self.D, self.M2), (self.D, self.M2), (self.M2, self.M2), (self.M2, self.M2), (self.D, self.M2), (self.M2, self.M2))]
+                                                                                ((self.D, self.M2), (self.D, self.M2), (self.M2, self.M2), 
+                                                                                 (self.M2, self.M2), (self.D, self.M2), (self.M2, self.M2))]
 
         self.params = [self.Wx_h, self.Wx_z, self.Wh_z, self.Wh_h, self.Wx_r, self.Wh_r]
 
@@ -206,7 +209,8 @@ class LSTM():
 
     def set_Wb(self, Wb_npz):
         if Wb_npz:
-            self.Wx_i, self.Wc_i, self.Wh_i, self.Wx_f, self.Wc_f, self.Wh_f, self.Wx_c, self.Wh_c, self.Wx_o, self.Wc_o, self.Wh_o = [list(map(tf.Variable, W_b)) for W_b in Wb_npz]
+            self.Wx_i, self.Wc_i, self.Wh_i, self.Wx_f, self.Wc_f, self.Wh_f, self.Wx_c, self.Wh_c, self.Wx_o, self.Wc_o, self.Wh_o = 
+                                  [list(map(tf.Variable, W_b)) for W_b in Wb_npz]
         else:
             self.Wx_i, self.Wc_i, self.Wh_i = [self.helper(dim) for dim in ((self.D, self.M2), (self.M2, self.M2), (self.M2, self.M2))]
             self.Wx_f, self.Wc_f, self.Wh_f = [self.helper(dim) for dim in ((self.D, self.M2), (self.M2, self.M2), (self.M2, self.M2))]
@@ -246,10 +250,14 @@ class LSTM():
         prev_h_rec = tf.reshape(prev_h_c[0], (1, self.M2))
         prev_c_rec = tf.reshape(prev_h_c[1], (1, self.M2))
 
-        inp_g = self.nonlinear("sigmoid")(tf.matmul(current_X, self.Wx_i[0]) + tf.matmul(prev_h_rec, self.Wh_i[0]) + tf.matmul(prev_c_rec, self.Wc_i[0]) + self.Wc_i[1])
-        forget_g = self.nonlinear("sigmoid")(tf.matmul(current_X, self.Wx_f[0]) + tf.matmul(prev_h_rec, self.Wh_f[0]) + tf.matmul(prev_c_rec, self.Wc_f[0]) + self.Wc_f[1])
-        c = forget_g * prev_c_rec + inp_g * self.nonlinear("tanh")(tf.matmul(current_X, self.Wx_c[0]) + tf.matmul(prev_h_rec, self.Wh_c[0]) + self.Wh_c[1])
-        out = self.nonlinear("sigmoid")(tf.matmul(current_X, self.Wx_o[0]) + tf.matmul(prev_h_rec, self.Wh_o[0]) + tf.matmul(c, self.Wc_o[0]) + self.Wc_o[1])
+        inp_g = self.nonlinear("sigmoid")(tf.matmul(current_X, self.Wx_i[0]) + tf.matmul(prev_h_rec, self.Wh_i[0]) + \ 
+                                          tf.matmul(prev_c_rec, self.Wc_i[0]) + self.Wc_i[1])
+        forget_g = self.nonlinear("sigmoid")(tf.matmul(current_X, self.Wx_f[0]) + tf.matmul(prev_h_rec, self.Wh_f[0]) + \ 
+                                             tf.matmul(prev_c_rec, self.Wc_f[0]) + self.Wc_f[1])
+        c = forget_g * prev_c_rec + inp_g * self.nonlinear("tanh")(tf.matmul(current_X, self.Wx_c[0]) + tf.matmul(prev_h_rec, self.Wh_c[0]) + \
+                                                                   self.Wh_c[1])
+        out = self.nonlinear("sigmoid")(tf.matmul(current_X, self.Wx_o[0]) + tf.matmul(prev_h_rec, self.Wh_o[0]) + \ 
+                                        tf.matmul(c, self.Wc_o[0]) + self.Wc_o[1])
         h_recur = out * self.nonlinear("tanh")(c)
 
         ''' return tuple (h(t-1), c(t-1)) because recurrence in tf may have only 2 variables '''
@@ -281,9 +289,11 @@ class RecurrentPoetryClass():
         self.session = session
 
     def optimizer(self, auto_optimizer, auto_opt_args):
-        optimizer_dict = {"graddes": tf.train.GradientDescentOptimizer, "adadelta": tf.train.AdadeltaOptimizer, "adagrad": tf.train.AdagradOptimizer,
-                          "adagradD": tf.train.AdagradDAOptimizer, "momentum": tf.train.MomentumOptimizer, "adam": tf.train.AdamOptimizer,
-                          "ftlr": tf.train.FtrlOptimizer, "proxgrad": tf.train.ProximalGradientDescentOptimizer, "proxadagrad": tf.train.ProximalAdagradOptimizer, "rms": tf.train.RMSPropOptimizer}
+        optimizer_dict = {"graddes": tf.train.GradientDescentOptimizer, "adadelta": tf.train.AdadeltaOptimizer, 
+                          "adagrad": tf.train.AdagradOptimizer, "adagradD": tf.train.AdagradDAOptimizer, 
+                          "momentum": tf.train.MomentumOptimizer, "adam": tf.train.AdamOptimizer, "ftlr": tf.train.FtrlOptimizer, 
+                          "proxgrad": tf.train.ProximalGradientDescentOptimizer, "proxadagrad": tf.train.ProximalAdagradOptimizer, 
+                          "rms": tf.train.RMSPropOptimizer}
 
         if auto_optimizer.lower() in optimizer_dict.keys():
             optimizer = optimizer_dict[auto_optimizer.lower()]
@@ -298,13 +308,15 @@ class RecurrentPoetryClass():
     def helper(self, dim):
         return list(map(tf.Variable, init_weight_and_bias(dim[0], dim[1])))
 
-    def model_initializer(self, recurr_unit, N_cls, nonlin_func, optimizer="adam", optimizer_args=(1e-5, 0.99, 0.999), reg=10-3, train_mode=True, lst_W_b=None):
+    def model_initializer(self, recurr_unit, N_cls, nonlin_func, optimizer="adam", optimizer_args=(1e-5, 0.99, 0.999), reg=10-3, 
+                          train_mode=True, lst_W_b=None):
 
         self.tfX = tf.placeholder(tf.float32, shape=(None, self.V), name="tfX")
         self.tfT = tf.placeholder(tf.int32, shape=(None), name="tfT")
 
         if train_mode:
-            #self.Wx_input, self.W_recurrent, self.W_output = [self.helper(dim) for dim in ((self.V, self.M2), (self.M2, self.M2), (self.M2, N_cls))]
+            #self.Wx_input, self.W_recurrent, self.W_output = [self.helper(dim) for dim in ((self.V, self.M2), (self.M2, self.M2), 
+                                                                                            (self.M2, N_cls))]
             self.W_out = self.helper((self.M2, N_cls))
             self.RecUnit = recurr_unit(self.V, self.M2, nonlin_func)
         else:
@@ -322,7 +334,8 @@ class RecurrentPoetryClass():
         self.prediction = tf.argmax(tf.nn.softmax(self.logits))
 
         rcost = reg * sum([tf.nn.l2_loss(coefs) for weight_and_bias in self.params for coefs in weight_and_bias])
-        self.cost = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=tf.reshape(self.logits, (1, -1)), labels=tf.reshape(self.tfT, (1, )))) + rcost
+        self.cost = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=tf.reshape(self.logits, (1, -1)), 
+                                                                                  labels=tf.reshape(self.tfT, (1, )))) + rcost
 
         self.train_op = self.optimizer(optimizer, optimizer_args).minimize(self.cost)
 
@@ -338,7 +351,8 @@ class RecurrentPoetryClass():
             X, Y = shuffle(X, Y)
             for sentense in range(len(X)):
                 self.session.run(self.train_op, feed_dict={self.tfX: x_hot_encoding(X[sentense], self.V), self.tfT: Y[sentense]})
-                c, predict = self.session.run([self.cost, self.prediction], feed_dict={self.tfX: x_hot_encoding(X[sentense], self.V), self.tfT: Y[sentense]})
+                c, predict = self.session.run([self.cost, self.prediction], feed_dict={self.tfX: x_hot_encoding(X[sentense], self.V), 
+                                                                                       self.tfT: Y[sentense]})
                 costs[epoch] += c
 
                 corr_rate[epoch] += int(predict == Y[sentense])
@@ -364,7 +378,8 @@ class RecurrentPoetryClass():
             plt.show()
         else:
             name_dict = {LSTM: "LSTM", GateReccUnit: "GateReccUnit", RateReccUnit: "RateReccUnit", SimpleReccUnit: "SimpleReccUnit"}
-            name = "RNNclasif_" + name_dict[recurr_unit] + optimizer + "_".join(map(str, optimizer_args)) + str(final_epoch) + "_reg_" + str(reg) + ".png"
+            name = "RNNclasif_" + name_dict[recurr_unit] + optimizer + "_".join(map(str, optimizer_args)) + str(final_epoch) + "_reg_" + \
+                    str(reg) + ".png"
             fig.savefig(name)
 
 
@@ -433,7 +448,8 @@ def verifyModel(lst_poets, poetsfilename, hidden_units, recurr_unit, from_file):
 
     N_verify = 250
 
-    recurrent_model.fit(X[:-250], Y[:-250], recurr_unit, nonlin_func="relu", optimizer="adam", optimizer_args=(1e-4, 0.9, 0.999), reg=10-10, epochs=150, show_fig=False)
+    recurrent_model.fit(X[:-250], Y[:-250], recurr_unit, nonlin_func="relu", optimizer="adam", optimizer_args=(1e-4, 0.9, 0.999), reg=10-10, 
+                        epochs=150, show_fig=False)
     quality = 0
     for i in range(1, N_verify + 1):
         prediction = recurrent_model.predict(X[-i])
@@ -457,7 +473,8 @@ def createModel(lst_poets, poetsfilename, hidden_units, modelfilename, recurr_un
     session = tf.InteractiveSession()
     recurrent_model.set_session(session)
 
-    recurrent_model.fit(X, Y, recurr_unit, nonlin_func="relu", optimizer="adam", optimizer_args=(1e-4, 0.9, 0.999), reg=10-10, epochs=150, show_fig=True)
+    recurrent_model.fit(X, Y, recurr_unit, nonlin_func="relu", optimizer="adam", optimizer_args=(1e-4, 0.9, 0.999), reg=10-10, epochs=150, 
+                        show_fig=True)
     recurrent_model.save(modelfilename)
 
 
@@ -501,8 +518,8 @@ if __name__ == "__main__":
     #getAndSaveData(["poe.txt", "shakespeare.txt", "robert_frost.txt"], "poe_shakespeare_frost.npz")
     #for model in [RateReccUnit, SimpleReccUnit]:
     #    verifyModel(["poe.txt", "shakespeare.txt", "robert_frost.txt"], "poe_shakespeare_frost.npz", 50, model, from_file=True)
-    #createModel(["poe.txt", "shakespeare.txt", "robert_frost.txt"], "poe_shakespeare_frost.npz", 50, "LSTMPoeShakesFrost_adam10-4_0.9_150ep.npz", LSTM,
-    #            from_file=True)
+    #createModel(["poe.txt", "shakespeare.txt", "robert_frost.txt"], "poe_shakespeare_frost.npz", 50, 
+    #             "LSTMPoeShakesFrost_adam10-4_0.9_150ep.npz", LSTM, from_file=True)
 
     '''
     X_test, Y_test, d = get_poetry_classifier_data(["poe_shaks_frost_verify.txt"], "poe_shakespeare_frost_verify.npz")
@@ -527,7 +544,8 @@ if __name__ == "__main__":
     recurrent_model.set_session(session)
     for i in range(1):
         X, Y = shuffle(X, Y)
-        recurrent_model.fit(X[:-150], Y[:-150], nonlin_func="relu", optimizer="adam", optimizer_args=(1e-4, 0.99, 0.999), reg=10-10, epochs=220, show_fig=True)
+        recurrent_model.fit(X[:-150], Y[:-150], nonlin_func="relu", optimizer="adam", optimizer_args=(1e-4, 0.99, 0.999), reg=10-10, 
+                            epochs=220, show_fig=True)
         quality = 0
         for i in range(1, N_verify + 1):
             prediction = recurrent_model.predict(X[-i])
@@ -542,7 +560,8 @@ if __name__ == "__main__":
     
     '''
     for k in range(8):
-        recurrent_model.fit(X=(X[:k * sz] + X[(k * sz + sz):]), Y=(Y[:k * sz] + Y[(k * sz + sz):]), nonlin_func="relu", optimizer="adam", optimizer_args=(1e-4, 0.99, 0.999), reg=0, epochs=100, show_fig=False)
+        recurrent_model.fit(X=(X[:k * sz] + X[(k * sz + sz):]), Y=(Y[:k * sz] + Y[(k * sz + sz):]), nonlin_func="relu", optimizer="adam", 
+                            optimizer_args=(1e-4, 0.99, 0.999), reg=0, epochs=100, show_fig=False)
         err = []
         for index in range(k * sz, (k * sz + sz)):
             err.append(int(recurrent_model.predict(X[index]) == Y[index]))

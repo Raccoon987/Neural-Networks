@@ -12,3 +12,5 @@ Repository contain different neural network implementation:
 
 5) autoencoders - unsupervised machine learning - autoencoders, Restricted Bolzman machines, convolutional autoencoders; 
                   deep neural and deep belief networks
+
+6) recurrent neural networks - 
