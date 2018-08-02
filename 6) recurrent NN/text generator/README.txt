@@ -15,8 +15,10 @@ learning text. Brown corpus - set of English-language texts on different subject
                      ('france' - 'paris' = ? - 'london') or ('king' - 'man' = ? - 'woman'). Of course, to get a good result, 
                      you need to use a large and various training dataset of sentences. 
                      a - b = ? - c
-                     Each word is represented by a vector. Unknown word will be the nearest vector-word from the whole training
-                     dataset (using the Euclidean or cosine metrics).
+                     Each word is represented by a vector. Find vector from the training data set that is closest to the unknown 
+                     vector using the Euclidean or cosine metrics.
                      index_sentence() and index_sentence_limit() functions return brown corpus sentences where each word is 
                      mapped with a number; second function leave only N most frequently used words, all other words are 
                      replaced by None.
+
+* Batch_TextGenerator.py - all is the same but this program uses batch training
