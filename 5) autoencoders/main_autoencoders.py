@@ -10,6 +10,8 @@ from sklearn.utils import shuffle
 from autoencoders import AutoEncoder, RestBolzmanMachine, ConvolveAutoEncoder, DeepNeuralNetwork
 
 
+f = lambda f_name: os.path.realpath(os.path.join(os.getcwd(), f_name)).replace("\\", "/")
+
 
 def getData(balance_ones=False):
     # images are 48x48 = 2304 size vectors;  N = 35887
