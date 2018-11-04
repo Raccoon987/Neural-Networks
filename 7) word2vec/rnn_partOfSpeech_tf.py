@@ -230,15 +230,15 @@ class RecurrentPOSClass():
         # Make the y-axis label, ticks and tick labels match the line color.
         ax1.set_ylabel('log cost', color='b')
 
-        ax2, ax3 = ax1.twinx(), ax1.twinx()
+        ax2 = ax1.twinx()
         ax2.plot(train_accuracy, 'r-')
         ax2.set_ylabel('train_accuracy', color='r')
-        ax3.plot(test_accuracy, 'g-')
+        ax2.plot(test_accuracy, 'g-')
 
 
         fig.tight_layout()
-        ax1.set_title('Log cost Curve' + "train_corr_rate: " + str(round(train_accuracy[-1], 3)) + \
-                      "test_corr_rate: " + str(round(test_accuracy[-1], 3)) )
+        ax1.set_title('Log cost Curve' + "train_acc: " + str(round(train_accuracy[-1], 3)) + \
+                      "test_acc: " + str(round(test_accuracy[-1], 3)) )
         ax1.grid()
         plt.show()
 
