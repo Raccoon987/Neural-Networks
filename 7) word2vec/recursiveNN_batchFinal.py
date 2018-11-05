@@ -548,19 +548,19 @@ class TNN():
 
         if train_inner_nodes:
             ''' (m,k), where m - number of such occurences and k=2, k: (num_of_sent_in_batch, position_of_word_in_sentence)'''
-            labels = tf.transpose(self.labels, [1, 0])
+            labels = tf.transpose(self.labels, [1, 0])   # was (batch_sz, word_num) => (word_num, batch_sz)
             idx = tf.where(labels > 0)
             logits_ = tf.gather_nd(logits, idx)
             labels_ = tf.gather_nd(labels, idx)
         else:
             ''' (k, ) shape tensor - k=batch_sz - num of sentences in batch '''
-            logits_ = logits[:, -1]
+            logits_ = logits[-1, :, :]       # select last word from each batch and keep all K_output_classes
             labels_ = self.labels[:, -1]
 
-        #labels_ = tf.Print(labels_, ["logits_: ", logits_,
-        #                             "logits_ shape: ", tf.shape(logits_),
-        #                             "labels_: ", labels_,
-        #                             "labels_ shape: ", tf.shape(labels_),])
+        labels_ = tf.Print(labels_, ["logits_: ", logits_,
+                                     "logits_ shape: ", tf.shape(logits_),
+                                     "labels_: ", labels_,
+                                     "labels_ shape: ", tf.shape(labels_),])
 
         self.cost = tf.reduce_mean(
             tf.nn.sparse_softmax_cross_entropy_with_logits(
@@ -764,9 +764,10 @@ if __name__ == "__main__":
     model.set_session(session)
 
     model.batch_fit(train_lst[:1500], V, K, nonlin_func="tanh", optimizer="adagrad", optimizer_args=(8e-3,), epochs=30,
-                    reg=1e-3, train_inner_nodes=True, batch_sz=15)
+                    reg=1e-3, train_inner_nodes=False, batch_sz=15)
 
 
+    '''
     model.save_weights("recursiveNN_weights_batch.npz")
 
     print(model.predict(test_lst[:35], batch_sz=15))
@@ -781,5 +782,5 @@ if __name__ == "__main__":
     print(model_1.predict(test_lst[:35], batch_sz=15, k=True))
 
     print("test accuracy: %f test f1 score: %f", (model_1.score_prediction(model_1.predict(test_lst[:500], batch_sz=15, k=True), list(map(operator.itemgetter(-1), np.array(test_lst)[:500, 3])))))
-
+    '''
 
