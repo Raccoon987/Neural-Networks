@@ -166,12 +166,17 @@ def deepnetwork():
     X, Y = getImageData()
     X_ = X.reshape(X.shape[0], np.prod(X.shape[1:]))
 
-    dnn = DeepNeuralNetwork(auto_hid_layer_sz=[2000, 1400, 800, 400, 100], auto_nonlin_func=["sigmoid", "sigmoid", "sigmoid", "sigmoid", "sigmoid"], auto_drop_coef=(1.0, 1.0, 1.0, 1.0, 1.0))
-    #dnn = DeepNeuralNetwork(auto_hid_layer_sz=[1000, 750, 500], auto_nonlin_func=["sigmoid", "sigmoid", "sigmoid"], auto_drop_coef=(1.0, 1.0, 1.0), UnsupervisedModel=RestBolzmanMachine)
+    dnn = DeepNeuralNetwork(auto_hid_layer_sz=[2000, 1400, 800, 400, 100], 
+			    auto_nonlin_func=["sigmoid", "sigmoid", "sigmoid", "sigmoid", "sigmoid"], 
+			    auto_drop_coef=(1.0, 1.0, 1.0, 1.0, 1.0))
+    #dnn = DeepNeuralNetwork(auto_hid_layer_sz=[1000, 750, 500], 
+    #			     auto_nonlin_func=["sigmoid", "sigmoid", "sigmoid"], 
+    #			     auto_drop_coef=(1.0, 1.0, 1.0), 
+    #			     UnsupervisedModel=RestBolzmanMachine)
 
     session = tf.InteractiveSession()
-    dnn.fit(X_, Y, session=session, optimizer="adam", opt_param_lst=(1e-3, 0.99, 0.999), auto_optimizer="adam", auto_opt_param_lst=(1e-3, 0.99, 0.999), pretrain=True,
-            epochs=10, batch_sz=100, split=True, print_every=20, show_fig=True)
+    dnn.fit(X_, Y, session=session, optimizer="adam", opt_param_lst=(1e-3, 0.99, 0.999), auto_optimizer="adam", 
+            auto_opt_param_lst=(1e-3, 0.99, 0.999), pretrain=True, epochs=10, batch_sz=100, split=True, print_every=20, show_fig=True)
 
 
 

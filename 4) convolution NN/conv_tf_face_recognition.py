@@ -100,7 +100,10 @@ class ConvPullLayerBatchNorm(ConvPullLayer):
 class ConvNeuralNetwork_Image():
     def __init__(self, convpull_layer_sizes, conv_nonlin_functions, poolsz, hidden_layer_sizes, nonlin_functions, dropout_coef):
         '''length of dropout_coef should == length of hidden_layer + 1:  we make dropout before first layer too'''
-        if (len(convpull_layer_sizes) != len(conv_nonlin_functions)) and (len(hidden_layer_sizes) != len(dropout_coef) - 1) and (len(hidden_layer_sizes) != len(nonlin_functions)):
+        if (len(convpull_layer_sizes) != len(conv_nonlin_functions)) and \
+           (len(hidden_layer_sizes) != len(dropout_coef) - 1) and \
+           (len(hidden_layer_sizes) != len(nonlin_functions)):
+            
             print("LENGTH OF hidden_layer_sizes PARAMETERS MUST EQUAL TO LENGTH OF dropout_coef - 1 AND EQUAL TO LENGTH OF nonlin_functions")
             raise ValueError
         self.convpull_layer_sizes = convpull_layer_sizes
@@ -131,9 +134,13 @@ class ConvNeuralNetwork_Image():
         except ValueError:
             print("Uncorrect arguments for " + optimizer + " optimizer")
 
-    #def fit(self, X, Y, optimizer="adam", optimizer_params=(10e-4, 0.99, 0.999), learning_rate=10e-7, mu=0.99, decay=0.999, reg=10e-3, epochs=400, batch_size=100, split=True, show_fig=False, print_every=20):
-    def fit(self, X, Y, optimizer="adam", optimizer_params=(10e-4, 0.99, 0.999), reg=10e-3, epochs=400, batch_size=100, split=True, show_fig=False, print_every=20, print_tofile=False):
-        #learning_rate, mu, decay, reg = map(np.float32, [learning_rate, mu, decay, reg])
+    #def fit(self, X, Y, optimizer="adam", optimizer_params=(10e-4, 0.99, 0.999), learning_rate=10e-7, mu=0.99, 
+    #        decay=0.999, reg=10e-3, epochs=400, batch_size=100, split=True, show_fig=False, print_every=20):
+    
+    def fit(self, X, Y, optimizer="adam", optimizer_params=(10e-4, 0.99, 0.999), reg=10e-3, epochs=400, 
+            batch_size=100, split=True, show_fig=False, print_every=20, print_tofile=False):
+        
+	#learning_rate, mu, decay, reg = map(np.float32, [learning_rate, mu, decay, reg])
         K = len(set(Y))
         X, Y = X.astype(np.float32), y_hot_encoding(Y).astype(np.float32)
         X, Y = shuffle(X, Y)
@@ -150,10 +157,15 @@ class ConvNeuralNetwork_Image():
         self.convpool_layers = []
         # in self.convpull_layer_sizes should be (new_feature, filter_width, filter_height)
         for index, outF_wdt_hgt in enumerate(self.convpull_layer_sizes):
-            self.convpool_layers.append(ConvPullLayer(input_feature, *outF_wdt_hgt, self.conv_nonlin_functions[index], self.poolsz))
+            self.convpool_layers.append(ConvPullLayer(input_feature, 
+						      *outF_wdt_hgt, 
+						      self.conv_nonlin_functions[index], 
+						      self.poolsz))
             input_feature = outF_wdt_hgt[0]
-        # shape of the image after serie of convolution + maxpool layers
-        final_output_width, final_output_height = width / ( self.poolsz[0] ** len(self.convpull_layer_sizes)), height / (self.poolsz[1] ** len(self.convpull_layer_sizes))
+        
+	# shape of the image after serie of convolution + maxpool layers
+        final_output_width, final_output_height = width / ( self.poolsz[0] ** len(self.convpull_layer_sizes)), \
+						  height / (self.poolsz[1] ** len(self.convpull_layer_sizes))
 
         ''' initialize hidden layers '''
         # size of output feature of last convpull layer * shape of output image

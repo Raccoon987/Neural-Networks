@@ -100,8 +100,21 @@ def vectorizer(data, **kwargs):
 
 def crossValidation(model, data, K=5, learning_rate=10e-6, reg=10e-7, epochs=10001):
     # split data into K parts
-    X, Y = vectorizer(np.array(data[0]["text"]),  tokenizer=tokenize, ngram_range=(1, 3), max_df=0.85, min_df=1, max_features=None), np.array(data[0]["label"])
-    #X, Y = vectorizer(np.array(data[0]["text"]), ngram_range=(1, 3), max_df=0.85, min_df=1, max_features=None), np.array(data[0]["label"])
+    X, Y = vectorizer(np.array(data[0]["text"]),  
+                      tokenizer=tokenize, 
+                      ngram_range=(1, 3), 
+                      max_df=0.85, 
+                      min_df=1, 
+                      max_features=None), \
+           np.array(data[0]["label"])
+    
+    #X, Y = vectorizer(np.array(data[0]["text"]), 
+    #                  ngram_range=(1, 3), 
+    #                  max_df=0.85, 
+    #                  min_df=1, 
+    #                  max_features=None), 
+    #       np.array(data[0]["label"])
+
     sz = (X.shape)[0] // K
     errors = []
     for k in range(K):

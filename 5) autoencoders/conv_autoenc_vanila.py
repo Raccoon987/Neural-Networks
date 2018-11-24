@@ -122,7 +122,9 @@ class AutoEncoder():
 
         self.cost = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=self.tfX, logits=logits))
 
-        ''' "adam": learning_rate, beta1=0.99, beta2=0.999; "rmsprop" : learning_rate, decay=decay, momentum=mu; "momentum" : learning_rate, momentum=mu, use_nesterov=False '''
+        ''' "adam": learning_rate, beta1=0.99, beta2=0.999; 
+	    "rmsprop" : learning_rate, decay=decay, momentum=mu; 
+	    "momentum" : learning_rate, momentum=mu, use_nesterov=False '''
         # self.train_op = tf.train.AdamOptimizer(learning_rate=1e-1, beta1=0.99, beta2=0.999).minimize(self.cost)
         self.train_op = self.optimizer(auto_optimizer, auto_opt_args).minimize(self.cost)
 
@@ -209,9 +211,11 @@ class HiddenLayerBatchNorm(HiddenLayer):
             update_running_var = tf.assign(self.running_var, self.running_var * decay + batch_var * (1 - decay))
 
             with tf.control_dependencies([update_running_mean, update_running_var]):
-                normalized_linear = tf.nn.batch_normalization(linear, batch_mean, batch_var, self.beta, self.gamma, variance_epsilon=1e-4)
+                normalized_linear = tf.nn.batch_normalization(linear, batch_mean, batch_var, self.beta, 
+							      self.gamma, variance_epsilon=1e-4)
         else:
-            normalized_linear = tf.nn.batch_normalization(linear, self.running_mean, self.running_var, self.beta, self.gamma, variance_epsilon=1e-4)
+            normalized_linear = tf.nn.batch_normalization(linear, self.running_mean, self.running_var, 
+							  self.beta, self.gamma, variance_epsilon=1e-4)
 
         return self.nonlinear(self.nonlin_func)(normalized_linear)
 
@@ -252,9 +256,13 @@ class ConvPullLayerBatchNorm(ConvPullLayer):
 class ConvNeuralNetwork_Image():
     def __init__(self, convpull_layer_sizes, conv_nonlin_functions, poolsz, auto_hid_layer_sz, auto_nonlin_func, auto_drop_coef, hidden_layer_sizes, nonlin_functions, dropout_coef, UnsupervisedModel=AutoEncoder):
         '''length of dropout_coef should == length of hidden_layer + 1:  we make dropout before first layer too'''
-        if (len(convpull_layer_sizes) != len(conv_nonlin_functions)) and (len(hidden_layer_sizes) != len(dropout_coef) - 1) and (len(hidden_layer_sizes) != len(nonlin_functions)):
-            print("LENGTH OF hidden_layer_sizes PARAMETERS MUST EQUAL TO LENGTH OF dropout_coef - 1 AND EQUAL TO LENGTH OF nonlin_functions")
+        if (len(convpull_layer_sizes) != len(conv_nonlin_functions)) and \
+	   (len(hidden_layer_sizes) != len(dropout_coef) - 1) and \
+	   (len(hidden_layer_sizes) != len(nonlin_functions)):
+            
+	    print("LENGTH OF hidden_layer_sizes PARAMETERS MUST EQUAL TO LENGTH OF dropout_coef - 1 AND EQUAL TO LENGTH OF nonlin_functions")
             raise ValueError
+        
         self.convpull_layer_sizes = convpull_layer_sizes
         self.conv_nonlin_functions = conv_nonlin_functions
         self.poolsz = poolsz
@@ -294,9 +302,12 @@ class ConvNeuralNetwork_Image():
                 auto_obj.set_session(session)
 
 
-    #def fit(self, X, Y, optimizer="adam", optimizer_params=(10e-4, 0.99, 0.999), learning_rate=10e-7, mu=0.99, decay=0.999, reg=10e-3, epochs=400, batch_size=100, split=True, show_fig=False, print_every=20):
-    def fit(self, X, Y, session, optimizer="adam", optimizer_params=(10e-4, 0.99, 0.999), auto_optimizer="adam", auto_opt_param_lst=(10e-4, 0.99, 0.999), pretrain=True,
-            reg=10e-3, epochs=400, batch_size=100, split=True, show_fig=False, print_every=20, print_tofile=False):
+    #def fit(self, X, Y, optimizer="adam", optimizer_params=(10e-4, 0.99, 0.999), learning_rate=10e-7, mu=0.99, decay=0.999, 
+    #         reg=10e-3, epochs=400, batch_size=100, split=True, show_fig=False, print_every=20):
+    def fit(self, X, Y, session, optimizer="adam", optimizer_params=(10e-4, 0.99, 0.999), auto_optimizer="adam", 
+	    auto_opt_param_lst=(10e-4, 0.99, 0.999), pretrain=True, reg=10e-3, epochs=400, batch_size=100, split=True, 
+            show_fig=False, print_every=20, print_tofile=False):
+        
         #learning_rate, mu, decay, reg = map(np.float32, [learning_rate, mu, decay, reg])
         K = len(set(Y))
         X, Y = X.astype(np.float32), y_hot_encoding(Y).astype(np.float32)
@@ -317,14 +328,22 @@ class ConvNeuralNetwork_Image():
             self.convpool_layers.append(ConvPullLayer(input_feature, *outF_wdt_hgt, self.conv_nonlin_functions[index], self.poolsz))
             input_feature = outF_wdt_hgt[0]
         # shape of the image after serie of convolution + maxpool layers
-        final_output_width, final_output_height = width / ( self.poolsz[0] ** len(self.convpull_layer_sizes)), height / (self.poolsz[1] ** len(self.convpull_layer_sizes))
+        final_output_width, final_output_height = width / ( self.poolsz[0] ** len(self.convpull_layer_sizes)), \
+						  height / (self.poolsz[1] ** len(self.convpull_layer_sizes))
 
         ''' initialize deep network '''
         # size of output feature of last convpull layer * shape of output image
         input_size = int(self.convpull_layer_sizes[-1][0] * final_output_width * final_output_height)
         self.auto_hid_lay = []
         for index, output_size in enumerate(self.auto_hid_layer_sz):
-            self.auto_hid_lay.append(self.unsupervised_model(input_size, output_size, self.auto_nonlin_func[index], index, auto_optimizer, auto_opt_param_lst, self.auto_drop_coef[index]))
+            self.auto_hid_lay.append(self.unsupervised_model(input_size, 
+							     output_size, 
+							     self.auto_nonlin_func[index], 
+							     index, 
+							     auto_optimizer, 
+							     auto_opt_param_lst, 
+							     self.auto_drop_coef[index]))
+
             input_size = output_size
 
         self.set_session(session)
@@ -450,6 +469,7 @@ def main():
                                     hidden_layer_sizes=[500, 300], nonlin_functions=("relu", "relu"), dropout_coef=(0.9, 0.8, 0.8))
     session = tf.InteractiveSession()
     model.set_session(session)
-    model.fit(X, Y, optimizer="adam", optimizer_params=(10e-4, 0.99, 0.999), reg=10e-3, epochs=10, batch_size=1000, split=True, show_fig=True, print_every=10, print_tofile=False)
+    model.fit(X, Y, optimizer="adam", optimizer_params=(10e-4, 0.99, 0.999), reg=10e-3, epochs=10, batch_size=1000, 
+	      split=True, show_fig=True, print_every=10, print_tofile=False)
 
 #main()

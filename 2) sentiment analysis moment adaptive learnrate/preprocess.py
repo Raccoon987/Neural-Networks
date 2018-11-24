@@ -98,14 +98,32 @@ def vectorizer(data, **kwargs):
 
 def crossValidation(model, data, batch_size, K=5, learning_rate=10e-6, reg=10e-7, epochs=10001, show_fig=False):
     # split data into K parts
-    X, Y = vectorizer(np.array(data[0]["text"]),  tokenizer=tokenize, ngram_range=(1, 3), max_df=0.85, min_df=1, max_features=None), np.array(data[0]["label"])
-    #X, Y = vectorizer(np.array(data[0]["text"]), ngram_range=(1, 3), max_df=0.85, min_df=1, max_features=None), np.array(data[0]["label"])
+    X, Y = vectorizer(np.array(data[0]["text"]),  
+		      tokenizer=tokenize, 
+		      ngram_range=(1, 3), 
+		      max_df=0.85, 
+		      min_df=1, 
+		      max_features=None), \
+	   np.array(data[0]["label"])
+
+    #X, Y = vectorizer(np.array(data[0]["text"]), 
+    #		       ngram_range=(1, 3), 
+    #		       max_df=0.85, 
+    #		       min_df=1, 
+    #		       max_features=None), \
+    #	    np.array(data[0]["label"])
+     
     sz = (X.shape)[0] // K
     errors = []
     for k in range(K):
-        model.fit(scipy.sparse.vstack((X[:k * sz, :], X[(k * sz + sz):, :])), np.append(Y[:k * sz], Y[(k * sz + sz):]), batch_size=batch_size,
-                  learning_rate=learning_rate, reg=reg, epochs=epochs, show_fig=show_fig)
-        err = model.score(X[k * sz:(k * sz + sz), :], Y[k * sz:(k * sz + sz)])
+        model.fit(scipy.sparse.vstack((X[:k * sz, :], X[(k * sz + sz):, :])), np.append(Y[:k * sz], Y[(k * sz + sz):]), 
+		  batch_size=batch_size,
+                  learning_rate=learning_rate, 
+		  reg=reg, 
+		  epochs=epochs, 
+		  show_fig=show_fig)
+        
+	err = model.score(X[k * sz:(k * sz + sz), :], Y[k * sz:(k * sz + sz)])
         print(err)
         errors.append(err)
     print("errors:", errors)

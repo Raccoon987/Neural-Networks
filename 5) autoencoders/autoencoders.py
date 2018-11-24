@@ -67,8 +67,11 @@ class AutoEncoder():
 
         self.cost = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=self.tfX, logits=logits))
 
-        ''' "adam": learning_rate, beta1=0.99, beta2=0.999; "rmsprop" : learning_rate, decay=decay, momentum=mu; "momentum" : learning_rate, momentum=mu, use_nesterov=False '''
-        # self.train_op = tf.train.AdamOptimizer(learning_rate=1e-1, beta1=0.99, beta2=0.999).minimize(self.cost)
+        ''' "adam": learning_rate, beta1=0.99, beta2=0.999; 
+  	    "rmsprop" : learning_rate, decay=decay, momentum=mu; 
+	    "momentum" : learning_rate, momentum=mu, use_nesterov=False '''
+        
+	# self.train_op = tf.train.AdamOptimizer(learning_rate=1e-1, beta1=0.99, beta2=0.999).minimize(self.cost)
         self.train_op = self.optimizer(auto_optimizer, auto_opt_args).minimize(self.cost)
 
     def fit(self, X, epochs=1, batch_sz=100, show_fig=True, print_every=20):
@@ -257,14 +260,22 @@ class ConvolveAutoEncoder():
 
         self.cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=self.tfX, logits=logits))
 
-        ''' "adam": learning_rate, beta1=0.99, beta2=0.999; "rmsprop" : learning_rate, decay=decay, momentum=mu; "momentum" : learning_rate, momentum=mu, use_nesterov=False '''
-        self.train_op = self.optimizer(auto_optimizer, auto_opt_args).minimize(self.cost)
+        ''' "adam": learning_rate, beta1=0.99, beta2=0.999; 
+	    "rmsprop" : learning_rate, decay=decay, momentum=mu; 
+	    "momentum" : learning_rate, momentum=mu, use_nesterov=False '''
+        
+	self.train_op = self.optimizer(auto_optimizer, auto_opt_args).minimize(self.cost)
 
     def convol(self, X):
         return tf.nn.bias_add(tf.nn.conv2d(X, self.W, strides=[1, 1, 1, 1], padding="SAME"), self.hidden_bias)
 
     def deconvol(self, Z_unpool):
-        return tf.contrib.layers.conv2d_transpose(Z_unpool, num_outputs=self.params[0], kernel_size=self.params[2:], stride=[1, 1], padding='SAME', activation_fn=None)
+        return tf.contrib.layers.conv2d_transpose(Z_unpool, 
+						  num_outputs=self.params[0], 
+						  kernel_size=self.params[2:], 
+						  stride=[1, 1], 
+						  padding='SAME', 
+						  activation_fn=None)
                                                  #activation_fn=self.nonlinear(self.nonlin_func))
 
     def pool(self, X_conv):
@@ -347,7 +358,8 @@ class DeepNeuralNetwork():
         for auto_obj in self.auto_hid_lay:
             auto_obj.set_session(session)
 
-    def fit(self, X, Y, session, optimizer, opt_param_lst, auto_optimizer, auto_opt_param_lst, pretrain=True, epochs=1, batch_sz=100, split=True, print_every=20, show_fig=False):
+    def fit(self, X, Y, session, optimizer, opt_param_lst, auto_optimizer, auto_opt_param_lst, pretrain=True, epochs=1, batch_sz=100, 
+            split=True, print_every=20, show_fig=False):
         K = len(set(Y))
         if isinstance(X, np.ndarray):
             X = X.astype(np.float32)
@@ -362,7 +374,15 @@ class DeepNeuralNetwork():
 
         input_size = X.shape[1]
         for index, output_size in enumerate(self.auto_hid_layer_sz):
-            self.auto_hid_lay.append(self.unsupervised_model(input_size, output_size, self.auto_nonlin_func[index], index, auto_optimizer, auto_opt_param_lst, self.auto_drop_coef[index]))
+            self.auto_hid_lay.append(self.unsupervised_model(input_size, 
+							     output_size, 
+							     self.auto_nonlin_func[index], 
+							     index, 
+							     auto_optimizer, 
+							     auto_opt_param_lst, 
+							     self.auto_drop_coef[index])
+				    )
+
             input_size = output_size
 
         self.set_session(session)

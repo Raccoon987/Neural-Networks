@@ -69,14 +69,37 @@ def vectorizer(data, **kwargs):
 
 def crossValidation(model, data, batch_size, learning_rate, mu, decay, reg, epochs, show_fig, print_every, split, K=5):
     # split data into K parts
-    X, Y = vectorizer(np.array(data[0]["text"]),  tokenizer=tokenize, ngram_range=(1, 3), max_df=0.85, min_df=1, max_features=None), np.array(data[0]["label"])
-    #X, Y = vectorizer(np.array(data[0]["text"]), ngram_range=(1, 3), max_df=0.85, min_df=1, max_features=None), np.array(data[0]["label"])
+    X, Y = vectorizer(np.array(data[0]["text"]),  
+		      tokenizer=tokenize, 
+		      ngram_range=(1, 3), 
+		      max_df=0.85, 
+		      min_df=1, 
+		      max_features=None), \
+	   np.array(data[0]["label"])
+    
+    #X, Y = vectorizer(np.array(data[0]["text"]), 
+    #		       ngram_range=(1, 3), 
+    #		       max_df=0.85, 
+    #		       min_df=1, 
+    #		       max_features=None), \
+    #	    np.array(data[0]["label"])
+    
     sz = (X.shape)[0] // K
     errors = []
     #print(X.shape, Y.shape)
+    
     for k in range(K):
-        model.fit(scipy.sparse.vstack((X[:k * sz, :], X[(k * sz + sz):, :])), np.append(Y[:k * sz], Y[(k * sz + sz):]), batch_size=batch_size,
-                  learning_rate=learning_rate, mu=mu, decay=decay, reg=reg, epochs=epochs, show_fig=show_fig, print_every=print_every, split=split)
+        model.fit(scipy.sparse.vstack((X[:k * sz, :], X[(k * sz + sz):, :])), 
+		  np.append(Y[:k * sz], Y[(k * sz + sz):]), 	
+		  batch_size=batch_size,
+                  learning_rate=learning_rate, 
+		  mu=mu, 
+		  decay=decay, 
+		  reg=reg, 
+		  epochs=epochs, 
+		  show_fig=show_fig, 
+		  print_every=print_every, 
+		  split=split)
         err = model.score(X[k * sz:(k * sz + sz), :], Y[k * sz:(k * sz + sz)])
         print(err)
         errors.append(err)

@@ -25,17 +25,25 @@ def main():
     # reshape X for tf: N x w x h x c
     X = X.transpose((0, 2, 3, 1))
 
-    model = ConvNeuralNetwork_Image(convpull_layer_sizes=((20, 5, 5), (50, 5, 5)), conv_nonlin_functions=("tanh", "tanh"), poolsz=[2, 2],
-                                    hidden_layer_sizes=[500, 300], nonlin_functions=("relu", "relu"), dropout_coef=(0.9, 0.8, 0.8))
+    model = ConvNeuralNetwork_Image(convpull_layer_sizes=((20, 5, 5), (50, 5, 5)), 
+				    conv_nonlin_functions=("tanh", "tanh"), 
+				    poolsz=[2, 2],
+                                    hidden_layer_sizes=[500, 300], 
+				    nonlin_functions=("relu", "relu"), 
+				    dropout_coef=(0.9, 0.8, 0.8))
     session = tf.InteractiveSession()
     model.set_session(session)
-    model.fit(X, Y, optimizer="adam", optimizer_params=(10e-4, 0.99, 0.999), reg=10e-3, epochs=10, batch_size=1000, split=True, show_fig=True, print_every=10, print_tofile=False)
-    #model.fit(X, Y, optimizer="adam", learning_rate=10e-4, mu=0.99, decay=0.999, reg=10e-3, epochs=10, batch_size=1000, split=True, show_fig=True, print_every=10)
+    model.fit(X, Y, optimizer="adam", optimizer_params=(10e-4, 0.99, 0.999), reg=10e-3, epochs=10, batch_size=1000, 
+	      split=True, show_fig=True, print_every=10, print_tofile=False)
+    #model.fit(X, Y, optimizer="adam", learning_rate=10e-4, mu=0.99, decay=0.999, reg=10e-3, epochs=10, batch_size=1000, 
+    #	       split=True, show_fig=True, print_every=10)
 
-    ''' #train_op = tf.train.RMSPropOptimizer(learning_rate, decay=0.9, momentum=0).minimize(cost)
-        #train_op = tf.train.AdamOptimizer(learning_rate=0.001, beta1=0.9, beta2=0.999).minimize(cost)
-        #train_op = tf.train.MomentumOptimizer(learning_rate, momentum=mu, use_locking=False, name='Momentum', use_nesterov=False).minimize(cost)
-        #train_op = tf.train.ProximalGradientDescentOptimizer(learning_rate, l1_regularization_strength=0.0, l2_regularization_strength=0.0, use_locking=False).minimize(cost) '''
+    #train_op = tf.train.RMSPropOptimizer(learning_rate, decay=0.9, momentum=0).minimize(cost)
+    #train_op = tf.train.AdamOptimizer(learning_rate=0.001, beta1=0.9, beta2=0.999).minimize(cost)
+    #train_op = tf.train.MomentumOptimizer(learning_rate, momentum=mu, use_locking=False, name='Momentum', 
+					       use_nesterov=False).minimize(cost)
+    #train_op = tf.train.ProximalGradientDescentOptimizer(learning_rate, l1_regularization_strength=0.0, 
+							  l2_regularization_strength=0.0, use_locking=False).minimize(cost) '''
 
 
 
@@ -47,8 +55,13 @@ def optimizer_learnrate_search():
     X, Y = getImageData()
     X = X.transpose((0, 2, 3, 1))
 
-    model = ConvNeuralNetwork_Image(convpull_layer_sizes=((20, 5, 5), (50, 5, 5)), conv_nonlin_functions=("tanh", "tanh"), poolsz=[2, 2],
-                                    hidden_layer_sizes=[500, 300], nonlin_functions=("relu", "relu"), dropout_coef=(0.9, 0.8, 0.8))
+    model = ConvNeuralNetwork_Image(convpull_layer_sizes=((20, 5, 5), (50, 5, 5)), 
+				    conv_nonlin_functions=("tanh", "tanh"), 
+				    poolsz=[2, 2],
+                                    hidden_layer_sizes=[500, 300], 
+				    nonlin_functions=("relu", "relu"), 
+				    dropout_coef=(0.9, 0.8, 0.8))
+    
     session = tf.InteractiveSession()
     model.set_session(session)
 
@@ -57,11 +70,28 @@ def optimizer_learnrate_search():
             if opt == "momentum":
                 for mu in [0.9, ]:
                     print("START optimizer: {} learnrate: {} momentun: {}".format(opt, str(lrn_rate), str(mu)))
-                    model.fit(X, Y, optimizer=opt, optimizer_params=(lrn_rate, mu, ), reg=10e-3, epochs=10, batch_size=1000, split=True, show_fig=False, print_every=10,
+                    model.fit(X, Y, 
+			      optimizer=opt, 
+			      optimizer_params=(lrn_rate, mu, ), 
+			      reg=10e-3, 
+			      epochs=10, 
+			      batch_size=1000, 
+			      split=True, 
+			      show_fig=False, 
+			      print_every=10,
                               print_tofile=f("1step) optimizer/" + opt + str(lrn_rate) + str(mu) + ".csv"))
-            else:
+            
+	    else:
                 print("START optimizer: {} learnrate: {}".format(opt, str(lrn_rate)))
-                model.fit(X, Y, optimizer=opt, optimizer_params=(lrn_rate, ), reg=10e-3, epochs=10, batch_size=1000, split=True, show_fig=False, print_every=10,
+                model.fit(X, Y, 
+			  optimizer=opt, 
+			  optimizer_params=(lrn_rate, ), 
+			  reg=10e-3, 
+			  epochs=10, 
+			  batch_size=1000, 
+			  split=True, 
+			  show_fig=False, 
+			  print_every=10,
                           print_tofile=f("1step) optimizer/" + opt + str(lrn_rate) + ".csv"))
 
 
@@ -111,7 +141,8 @@ def grid_search_one():
 
     ''' RELU RELU IS THE BEST FROM THE DOUBLE CONVOLUTION LAYERS INSPECTION  '''
 
-    conv_sz_lst = [((20, 5, 5), (50, 5, 5), (80, 5, 5)), ((20, 3, 3), (50, 3, 3), (80, 3, 3)),   ((15, 5, 5), (25, 5, 5), (50, 5, 5)),  ((15, 7, 7), (25, 7, 7), (50, 7, 7)),
+    conv_sz_lst = [((20, 5, 5), (50, 5, 5), (80, 5, 5)), ((20, 3, 3), (50, 3, 3), (80, 3, 3)),   
+     		   ((15, 5, 5), (25, 5, 5), (50, 5, 5)),  ((15, 7, 7), (25, 7, 7), (50, 7, 7)),
                    ((20, 7, 7), (50, 7, 7), (80, 7, 7))]
     conv_nonlin_lst = ["relu"]
     ''' (20, 3, 3)_(50, 3, 3)_(80, 3, 3)relu_relu_relu IS THE BEST - CLOSIEST ERR_RATE TO 0.4'''
@@ -122,11 +153,24 @@ def grid_search_one():
     for size in conv_sz_lst:
         for func in product(conv_nonlin_lst, repeat=len(size)):
             print(size, func)
-            model = ConvNeuralNetwork_Image(convpull_layer_sizes=size, conv_nonlin_functions=func,
-                                            poolsz=[2, 2], hidden_layer_sizes=[500, 300], nonlin_functions=("relu", "relu"), dropout_coef=(0.9, 0.8, 0.8))
-            session = tf.InteractiveSession()
+            model = ConvNeuralNetwork_Image(convpull_layer_sizes=size, 
+					    conv_nonlin_functions=func,
+                                            poolsz=[2, 2], 
+				      	    hidden_layer_sizes=[500, 300], 
+					    nonlin_functions=("relu", "relu"), 
+					    dropout_coef=(0.9, 0.8, 0.8))
+            
+	    session = tf.InteractiveSession()
             model.set_session(session)
-            model.fit(X, Y, optimizer="adam", optimizer_params=(10e-4, ), reg=10e-3, epochs=10, batch_size=1000, split=True, show_fig=False, print_every=10,
+            model.fit(X, Y, 
+		      optimizer="adam", 
+		      optimizer_params=(10e-4, ), 
+		      reg=10e-3, 
+		      epochs=10, 
+		      batch_size=1000, 
+		      split=True, 
+		      show_fig=False, 
+		      print_every=10,
                       print_tofile=f("2step) convlayer2/" + "adam" + "_".join(map(str, size)) + "_".join(func)))
 
 def grid_search_two():
@@ -140,11 +184,24 @@ def grid_search_two():
     for size in hidd_sz_lst:
         for func in product(hidd_nonlin_lst, repeat=len(size)):
             for drop in dropout_lst:
-                model = ConvNeuralNetwork_Image(convpull_layer_sizes=((20, 3, 3), (50, 3, 3), (80, 3, 3)), conv_nonlin_functions=("relu", "relu", "relu"), poolsz=[2, 2],
-                                                hidden_layer_sizes=size, nonlin_functions=func, dropout_coef=[drop]*(len(size)+1))
-                session = tf.InteractiveSession()
+                model = ConvNeuralNetwork_Image(convpull_layer_sizes=((20, 3, 3), (50, 3, 3), (80, 3, 3)), 
+						conv_nonlin_functions=("relu", "relu", "relu"), 
+						poolsz=[2, 2],
+                                                hidden_layer_sizes=size, 
+						nonlin_functions=func, 
+						dropout_coef=[drop]*(len(size)+1))
+                
+		session = tf.InteractiveSession()
                 model.set_session(session)
-                model.fit(X, Y, optimizer="adam", optimizer_params=(10e-4, ), reg=10e-3, epochs=10, batch_size=1000, split=True, show_fig=False, print_every=10,
+                model.fit(X, Y, 
+			  optimizer="adam", 
+			  optimizer_params=(10e-4, ), 
+			  reg=10e-3, 
+			  epochs=10, 
+			  batch_size=1000, 
+			  split=True, 
+			  show_fig=False, 
+			  print_every=10,
                           print_tofile=f("3step) vanila_layers/" + "_".join(map(str, size)) + "_".join(func) + str(drop) + ".csv"))
 
 
@@ -174,8 +231,13 @@ def grid_search_three():
     X, Y = getImageData()
     X = X.transpose((0, 2, 3, 1))
 
-    model = ConvNeuralNetwork_Image(convpull_layer_sizes=((20, 3, 3), (50, 3, 3), (80, 3, 3)), conv_nonlin_functions=("relu", "relu", "relu"), poolsz=[2, 2],
-                                    hidden_layer_sizes=[500, 300], nonlin_functions=("tanh", "tanh"), dropout_coef=(0.8, 0.8, 0.8))
+    model = ConvNeuralNetwork_Image(convpull_layer_sizes=((20, 3, 3), (50, 3, 3), (80, 3, 3)), 
+				    conv_nonlin_functions=("relu", "relu", "relu"), 
+				    poolsz=[2, 2],
+                                    hidden_layer_sizes=[500, 300], 
+				    nonlin_functions=("tanh", "tanh"), 
+				    dropout_coef=(0.8, 0.8, 0.8))
+    
     session = tf.InteractiveSession()
     model.set_session(session)
 
@@ -184,12 +246,28 @@ def grid_search_three():
             if opt == "momentum":
                 for mu in [0.9, ]:
                     print("START optimizer: {} learnrate: {} momentun: {}".format(opt, str(lrn_rate), str(mu)))
-                    model.fit(X, Y, optimizer=opt, optimizer_params=(lrn_rate, mu,), reg=10e-3, epochs=12, batch_size=1000, split=True, show_fig=False, print_every=3,
+                    model.fit(X, Y, 
+			      optimizer=opt, 
+			      optimizer_params=(lrn_rate, mu,), 
+			      reg=10e-3, 
+			      epochs=12, 
+			      batch_size=1000, 
+			      split=True, 
+			      show_fig=False, 
+			      print_every=3,
                               print_tofile=f("1step) optimizer/" + opt + str(lrn_rate) + str(mu) + ".csv"))
 
             else:
                 print("START optimizer: {} learnrate: {}".format(opt, str(lrn_rate)))
-                model.fit(X, Y, optimizer=opt, optimizer_params=(lrn_rate,), reg=10e-3, epochs=12, batch_size=1000, split=True, show_fig=False, print_every=3,
+                model.fit(X, Y, 
+			  optimizer=opt, 
+			  optimizer_params=(lrn_rate,), 
+			  reg=10e-3, 
+			  epochs=12, 
+			  batch_size=1000, 
+			  split=True, 
+			  show_fig=False, 
+			  print_every=3,
                           print_tofile=f("1step) optimizer/" + opt + str(lrn_rate) + ".csv"))
 
 
@@ -197,9 +275,9 @@ def grid_search_three():
 #grid_search_three()
 #plot_(f("1step) optimizer/"))
 ''' THE BEST OPTIMIZER - for:
-    hidden_layer_sizes=[500, 300]                                 nonlin_functions=["tanh", "tanh"]                   dropout_coef=[0.8, 0.8, 0.8]
+    hidden_layer_sizes=[500, 300]                 nonlin_functions=["tanh", "tanh"]            dropout_coef=[0.8, 0.8, 0.8]
     STILL:
-    adam   learnrate = 10e-4                                      and 2 place: momentum lnrate = 10e-3, mu = 0.9                               '''
+    adam   learnrate = 10e-4                      and 2 place: momentum lnrate = 10e-3, mu = 0.9                        '''
 
 
 
@@ -215,11 +293,24 @@ def grid_search_atricle():
     for conv_func in (("tanh", "tanh", "tanh"), ("relu", "relu", "relu")):
         for vanila_func in product(hidd_nonlin_lst, repeat=2):
 
-            model = ConvNeuralNetwork_Image(convpull_layer_sizes=((10, 5, 5), (10, 5, 5), (10, 3, 3)), conv_nonlin_functions=conv_func, poolsz=[2, 2],
-                                            hidden_layer_sizes=[256, 128], nonlin_functions=vanila_func, dropout_coef=(1.0, 0.5, 0.5))
-            session = tf.InteractiveSession()
+            model = ConvNeuralNetwork_Image(convpull_layer_sizes=((10, 5, 5), (10, 5, 5), (10, 3, 3)), 
+					    conv_nonlin_functions=conv_func, 
+					    poolsz=[2, 2],
+                                            hidden_layer_sizes=[256, 128], 
+					    nonlin_functions=vanila_func, 
+				 	    dropout_coef=(1.0, 0.5, 0.5))
+            
+	    session = tf.InteractiveSession()
             model.set_session(session)
-            model.fit(X, Y, optimizer="adam", optimizer_params=(10e-3, ), reg=10e-3, epochs=10, batch_size=1000, split=True, show_fig=False, print_every=10,
+            model.fit(X, Y, 
+		      optimizer="adam", 
+		      optimizer_params=(10e-3, ), 
+		      reg=10e-3, e
+		      pochs=10, 
+		      batch_size=1000, 
+		      split=True, 
+		      show_fig=False, 
+		      print_every=10,
                       print_tofile=f("nonlinear/" + "Conv " + "_".join(conv_func) + " fully " + "_".join(vanila_func) + ".csv"))
 
 #grid_search_atricle()

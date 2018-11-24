@@ -65,7 +65,10 @@ class KerasNeuralNetwork():
             '''later here may be implemented custom layer adding mechanism'''
             pass
 
-        ''' list of losses: https://keras.io/losses/     list of optimizers: https://keras.io/optimizers/     list of metrics: https://keras.io/metrics/'''
+        ''' list of losses: https://keras.io/losses/     
+            list of optimizers: https://keras.io/optimizers/     
+            list of metrics: https://keras.io/metrics/'''
+
         model.compile(loss=loss, optimizer=optimizer, metrics=metrics)
         return model
 
@@ -106,17 +109,34 @@ def main_search(iter):
     lst = [1768, 1555, 894, 674, 65, 54, 137, 327, 354, 492, 553, 634, 844, 928, 1054, 1118, 1228, 1449, 1474, 1483,
            1504, 1529, 1559, 1733, 1881, 1917]
     data = get_data("products_sentiment_train.tsv", "products_sentiment_test_copy.tsv", balance=True, drop_lst=lst)
-    X_train, Y_train = vectorizer(np.array(data[0]["text"]), tokenizer=tokenize, ngram_range=(1, 4), max_df=0.85, min_df=1, max_features=None), np.array(data[0]["label"])
+    X_train, Y_train = vectorizer(np.array(data[0]["text"]), 
+				  tokenizer=tokenize, 
+				  ngram_range=(1, 4), 
+				  max_df=0.85, 
+				  min_df=1, 
+				  max_features=None), \
+		       np.array(data[0]["label"])
 
-    #network_class = KerasNeuralNetwork(hidden_layer_sizes=(400, 100, 20, 10), nonlin_functions=("tanh", "relu", "relu", "relu"), dropout_coef=(0.9, 0.8, 0.8, 0.8))
-    network_class = KerasNeuralNetwork(hidden_layer_sizes=(400, 200, 10), nonlin_functions=("tanh", "tanh", "tanh"), dropout_coef=(0.7, 0.7, 0.7))
+    #network_class = KerasNeuralNetwork(hidden_layer_sizes=(400, 100, 20, 10), 
+    #					nonlin_functions=("tanh", "relu", "relu", "relu"), 
+    #					dropout_coef=(0.9, 0.8, 0.8, 0.8))
+    network_class = KerasNeuralNetwork(hidden_layer_sizes=(400, 200, 10), 
+				       nonlin_functions=("tanh", "tanh", "tanh"), 
+  				       dropout_coef=(0.7, 0.7, 0.7))
     X, Y, Y_flat = network_class.text_process_data(X_train, Y=Y_train)
 
 
     result = []
     for i in range(iter):
-        neural_network = network_class.init_model(D=X.shape[1], K=Y.shape[1], loss='categorical_crossentropy',
-                                                  optimizer=keras.optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.99, epsilon=1e-08, decay=0.0), metrics=['accuracy'])
+        neural_network = network_class.init_model(D=X.shape[1], 
+						  K=Y.shape[1], 
+						  loss='categorical_crossentropy',
+                                                  optimizer=keras.optimizers.Adam(lr=0.0001, 
+										  beta_1=0.9, 
+										  beta_2=0.99, 
+										  epsilon=1e-08, 
+										  decay=0.0), 
+						  metrics=['accuracy'])
         r = network_class.fit_network(X, Y, neural_network, epochs=30, batch=130, show=False)
         result.append(r)
     
@@ -139,11 +159,30 @@ def main_predict():
            1504, 1529, 1559, 1733, 1881, 1917]
     data = get_data("products_sentiment_train.tsv", "products_sentiment_test_copy.tsv", balance=True, drop_lst=lst)
     train_size = (np.array(data[0]["text"])).shape[0]
-    X_full, Y_full = vectorizer(np.append(np.array(data[0]["text"]), np.array(data[1]["text"])), tokenizer=tokenize, ngram_range=(1, 4), max_df=0.85, min_df=1, max_features=None), np.array(data[0]["label"])
-    network_class = KerasNeuralNetwork(hidden_layer_sizes=(400, 200, 10), nonlin_functions=("tanh", "tanh", "tanh"), dropout_coef=(0.7, 0.7, 0.7))
+    
+    X_full, Y_full = vectorizer(np.append(np.array(data[0]["text"]), np.array(data[1]["text"])), 
+				tokenizer=tokenize, 
+				ngram_range=(1, 4), 
+				max_df=0.85, 
+				min_df=1, 
+				max_features=None), \
+		     np.array(data[0]["label"])
+
+    network_class = KerasNeuralNetwork(hidden_layer_sizes=(400, 200, 10), 
+				       nonlin_functions=("tanh", "tanh", "tanh"), 
+				       dropout_coef=(0.7, 0.7, 0.7))
+    
     X_train, Y_train, Y_flat_train = network_class.text_process_data(X_full[:train_size, :], Y=Y_full)
-    neural_network = network_class.init_model(D=X_train.shape[1], K=Y_train.shape[1], loss='categorical_crossentropy',
-                                              optimizer=keras.optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.99,  epsilon=1e-08, decay=0.0), metrics=['accuracy'])
+    neural_network = network_class.init_model(D=X_train.shape[1], 
+					      K=Y_train.shape[1], 
+    					      loss='categorical_crossentropy',
+                                              optimizer=keras.optimizers.Adam(lr=0.0001, 
+									      beta_1=0.9, 
+									      beta_2=0.99,  
+									      epsilon=1e-08, 
+									      decay=0.0), 
+					      metrics=['accuracy'])
+
     r = network_class.fit_network(X_train, Y_train, neural_network, epochs=30, batch=130, show=False)
 
     X_predict = network_class.text_process_data(X_full[train_size:, :])
