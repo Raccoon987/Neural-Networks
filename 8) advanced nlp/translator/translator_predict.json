@@ -1,0 +1,53 @@
+{
+      "model": {
+               "save_dir": "saved_models_predict",
+		       "inputs": [
+                          {
+                              "var_name": "decoder_state_input_h",
+                              "type": "keras.layers.Input",
+                              "arguments": {
+                                               "name": "decoder_state_input_h",
+                                               "shape": 256
+                              }
+                          },
+                          {
+                              "var_name": "decoder_state_input_c",
+                              "type": "keras.layers.Input",
+                              "arguments": {
+                                               "name": "decoder_state_input_c",
+                                               "shape": 256
+                              }
+                          },
+                          {
+                              "var_name": "decoder_input_single",
+                              "type": "keras.layers.Input",
+                              "arguments": {
+                                               "name": "decoder_input_single",
+                                               "shape": 1
+                              }
+                          }
+               ],
+               "layers": [
+                          {
+                              "var_name": ["prediction_decoder_embedding"],
+                              "type": "model.get_layer('decoder_embedding')",
+                              "input": "decoder_input_single"
+
+                          },
+                          {
+                              "var_name": ["lstm_decoder_output", "h", "c"],
+                              "type": "model.get_layer('dec_lstm')",
+                              "initial_state": ["decoder_state_input_h", "decoder_state_input_c"],
+                              "input": "prediction_decoder_embedding"
+                          },
+                          {
+                              "var_name": ["decoder_output"],
+                              "type": "model.get_layer('output')",
+                              "input": "lstm_decoder_output"
+
+                          }
+               ],
+               "model_input": ["decoder_input_single", "decoder_state_input_h", "decoder_state_input_c"],
+               "model_output": ["decoder_output", "h", "c"]
+     }
+}
